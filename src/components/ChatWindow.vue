@@ -1,36 +1,27 @@
 <template>
     <div>
       <div v-if="isChatWindowVisible" class="chat-window">
-        <div v-on:click="closeChatWindow" class="chat-window-header">
-            
-        </div>
-        <div class="chat-view">
-            <div class="chat-view-messages">
-                <div class="chat-view-message chat-view-message-left">
-                    <span>Hi! Left</span>
-                </div>
-                <div class="chat-view-message chat-view-message-right">
-                    <span>Hi! Right</span>
-                </div>
-            </div> 
-            <div class="chat-view-input">
-                asd
-            </div> 
-        </div> 
+        <div v-on:click="closeChatWindow" class="chat-window-header"></div>
+
+        <chat-view></chat-view>
       </div>
 
-      <div v-if="!isChatWindowVisible" class="chat-button" v-on:click="openChatWindow">
-        
-      </div>
+      <div v-if="!isChatWindowVisible" class="chat-button" v-on:click="openChatWindow"></div>
     </div>
 </template>
 
 <script>
+import ChatView from './ChatView';
+import ChatSocket from '../socket';
+
 export default {
   data: function() {
     return {
       isChatWindowVisible: true
     }
+  },
+  components: {
+    ChatView
   },
   methods: {
     closeChatWindow: function() {
@@ -39,7 +30,14 @@ export default {
     openChatWindow: function() {
       this.isChatWindowVisible = true;
     }
-  }
+  },
+
+  created: function() {
+    const chatSocket = new ChatSocket(); 
+    chatSocket.onChange = () => this.$store.dispatch('socket/connectSocket');
+    chatSocket.onMessage = () => console.log("message received!");
+    //chatSocket.connect();
+  },
 }
 </script>
 
@@ -61,41 +59,6 @@ export default {
           background: white;
           border-top-left-radius: 15px;
           border-top-right-radius: 15px;
-      }
-
-      & .chat-view {
-          width: 100%;
-          height: calc(512px - 48px);
-          display: flex;
-          flex-direction: column;
-
-          &-messages {
-              flex: 1 0 auto;
-          }
-          &-message {
-              width: 100%;
-
-              $chat-message: &;
-
-              &-left {
-                text-align: left;
-              }
-              &-right {
-                text-align: right;
-              }
-              & > span {
-                background: #5ea7ff;
-                padding: 8px 16px;
-                display: inline-block;
-                color: white;
-              }
-          }
-          &-input {
-            flex: 0 0 48px;
-            background: pink;
-            border-bottom-right-radius: 15px;
-            border-bottom-left-radius: 15px;
-          }
       }
     }
     .chat-button {
