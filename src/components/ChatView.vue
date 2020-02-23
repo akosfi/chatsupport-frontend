@@ -1,11 +1,13 @@
 <template>
     <div class="chat-view">
         <div class="chat-view-messages">
-            <div class="chat-view-message chat-view-message-left">
-                <span>Hi! Left</span>
-            </div>
-            <div class="chat-view-message chat-view-message-right">
-                <span>Hi! Right</span>
+            <div 
+                v-for="message in messages"
+                v-bind:key="message.id"
+                v-bind:class="styleChatMessage(message)"
+                class="chat-view-message chat-view-message-left">
+
+                <span>{{message.text}}</span>
             </div>
         </div> 
         <div class="chat-view-input">
@@ -18,15 +20,23 @@
 </template>
 
 <script>
-export default {
+import _ from 'lodash';
+import {mapState} from 'vuex';
+
+export default {    
   data: function() {
     return {
       message: '',
     }
   },
   methods: {
-    
-  }
+    styleChatMessage: function(message) {
+        return { 'chat-view-message-left': message.fromAdmin, 'chat-view-message-right': !message.fromAdmin };
+    }
+  },
+  computed: mapState({
+    messages: state => _.sortBy(state.chat.messages, (m) => m.date),
+  }),
 }
 </script>
 

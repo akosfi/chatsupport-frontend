@@ -1,6 +1,5 @@
 <template>
     <div>
-      {{triedConnecting}}
       <div v-if="isChatWindowVisible" class="chat-window">
         <div v-on:click="closeChatWindow" class="chat-window-header"></div>
 
