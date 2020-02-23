@@ -31,10 +31,12 @@ export default {
 </script>
 
 <style lang="scss">
-    
+    @import "../styles/_variables";
+
+
     .chat-view {
         width: 100%;
-        height: calc(512px - 48px);
+        height: calc(#{$window-height} - #{$window-header-height});
         display: flex;
         flex-direction: column;
 
@@ -44,34 +46,37 @@ export default {
         &-message {
             width: 100%;
 
-            $chat-message: &;
-
             &-left {
                 text-align: left;
+                
+                & > span {
+                    background: $message-received-color;    
+                    color: $message-received-font-color;
+                }
             }
             &-right {
                 text-align: right;
+
+                & > span {
+                    background: $message-sent-color; 
+                    color: $message-sent-font-color;   
+                }
             }
             & > span {
-                background: #5ea7ff;
                 padding: 8px 16px;
                 display: inline-block;
-                color: white;
             }
         }
         &-input {
             flex: 0 0 48px;
-            background: pink;
-            border-bottom-right-radius: 15px;
-            border-bottom-left-radius: 15px;
+            @include set-window-bottom-border;
             position: relative;
 
             &-message {
                 height: 100%;
                 & input {
                     width: 100%;
-                    border-bottom-right-radius: 15px;
-                    border-bottom-left-radius: 15px;
+                    @include set-window-bottom-border;
                     border: none;
                     padding: 8px;
                     padding-right: 60px;

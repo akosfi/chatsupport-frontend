@@ -9,11 +9,6 @@ export default {
   name: 'App',
   components: {
     ChatWindow,
-  },
-
-  data: function() {
-    return {  }
-  },
-  methods: {  }
+  }
 }
 </script>

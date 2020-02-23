@@ -6,7 +6,7 @@
         <chat-view></chat-view>
       </div>
 
-      <div v-if="!isChatWindowVisible" class="chat-button" v-on:click="openChatWindow"></div>
+      <div v-if="!isChatWindowVisible" class="chat-widget" v-on:click="openChatWindow"></div>
     </div>
 </template>
 
@@ -42,31 +42,27 @@ export default {
 </script>
 
 <style lang="scss">
+    @import "../styles/_variables";
+
     .chat-window{
-      position: fixed;
-      z-index: 10000000;
-      right: 16px;
-      bottom: 16px;
-      width: 256px;
-      height: 512px;
-      border-radius: 15px;
-      background: #f2f2f2;
+      @include set-window-position;
+      width: $window-width;
+      height: $window-height;
+      border-radius: $window-border-radius;
+      background: $window-background-color;
       box-shadow: 0px 0px 14px 0px rgba(0,0,0,0.43);
 
       &-header {
           width: 100%;
-          height: 48px;
-          background: white;
-          border-top-left-radius: 15px;
-          border-top-right-radius: 15px;
+          height: $window-header-height;
+          background: $window-header-color;
+          @include set-window-top-border;
       }
     }
-    .chat-button {
-      position: fixed;
-      right: 16px;
-      bottom: 16px;
-      width: 56px;
-      height: 56px;
+    .chat-widget {
+      @include set-window-position;
+      width: $window-widget-size;
+      height: $window-widget-size;
       cursor: pointer;
       border-radius: 100%;
       box-shadow: 0px 0px 14px 0px rgba(0,0,0,0.43);
