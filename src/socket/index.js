@@ -9,51 +9,55 @@ class ChatSocket {
         this.socket = null;
         this.port = 3000;
         this.onChange = null;
-        this.onSocketError = null;
+        this.onConnectError = null;
         this.onMessage = null;
+
+        this._identifyClient = this._identifyClient.bind(this);
+        this._connect = this._connect.bind(this);
+        this._onConnected = this._onConnected.bind(this);
+        this._onError = this._onError.bind(this);
     }
 
-    connect() {
+    _connect() {
         const host = `http://localhost:${this.port}`;
         
-        this.socket = io.connect(host);
+        this.socket = io(host);
 
-        this.socket.on(CONNECT, this.onConnected);
-        this.socket.on(DISCONNECT, this.onDisconnected);
-        this.socket.on(CONNECT_ERR, this.onError);
-        this.socket.on(RECONNECT_ERR, this.onError);
-
+        this.socket.on(CONNECT, this._onConnected);
+        this.socket.on(DISCONNECT, this._onDisconnected);
+        this.socket.on(CONNECT_ERR, this._onError);
     }
 
-    onConnected() {
-        this.sendIdent();
+    _onConnected() {
+        this._identifyClient();
         this.socket.on(IM, this.onMessage);
         this.onChange(true);
     }
 
-    sendIdent() {
+    _identifyClient() {
         const identMessage = {
             guest_cookie: Cookies.get('guest_cookie'),
+            lc_license: (window.__lc ? window.__lc.license : 0)
         }
         this.socket.emit(IDENT, identMessage);
     }
 
-    onDisconnected(){
+    _onDisconnected(){
         this.onChange(false);
     }
 
-    sendIm(message) {
+    _sendIm(message) {
         this.socket.emit(IM, message);
     } 
 
-    disconnect() {
-        this.onDisconnected();
+    _disconnect() {
+        this._onDisconnected();
         this.socket.close();
     }
 
-    onError(message) {
-        //this.onSocketError(message);
-        this.disconnect();
+    _onError(message) {
+        this.onConnectError();
+        this._disconnect();
     };
 }
 

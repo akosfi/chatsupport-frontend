@@ -1,6 +1,6 @@
-export const IM            = 'IM';
-export const IDENT         = 'IDENTIFY';
-export const CONNECT       = 'CONNECT';
-export const DISCONNECT    = 'DISCONNECT';
-export const CONNECT_ERR   = 'CONNECT_ERROR';
-export const RECONNECT_ERR = 'RECONNECT_ERROR';
+export const IM            = 'im';
+export const IDENT         = 'ident';
+export const CONNECT       = 'connect';
+export const DISCONNECT    = 'disconnect';
+export const CONNECT_ERR   = 'connect_error';
+export const RECONNECT_ERR = 'reconnect_error';

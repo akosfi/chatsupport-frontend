@@ -1,9 +1,15 @@
 <template>
     <div>
+      {{triedConnecting}}
       <div v-if="isChatWindowVisible" class="chat-window">
         <div v-on:click="closeChatWindow" class="chat-window-header"></div>
 
-        <chat-view></chat-view>
+        <chat-view v-if="connectedToSocket"></chat-view>
+
+        <connection-error-view 
+          v-if="!connectedToSocket && triedConnectingToSocket"
+          :reconnectToSocket="reconnectToSocket"
+          ></connection-error-view>
       </div>
 
       <div v-if="!isChatWindowVisible" class="chat-widget" v-on:click="openChatWindow"></div>
@@ -11,8 +17,13 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
 import ChatView from './ChatView';
+import ConnectionErrorView from './ConnectionErrorView';
 import ChatSocket from '../socket';
+
+const chatSocket = new ChatSocket(); 
 
 export default {
   data: function() {
@@ -21,7 +32,8 @@ export default {
     }
   },
   components: {
-    ChatView
+    ChatView,
+    ConnectionErrorView
   },
   methods: {
     closeChatWindow: function() {
@@ -29,14 +41,20 @@ export default {
     },
     openChatWindow: function() {
       this.isChatWindowVisible = true;
+    },
+    reconnectToSocket: function () {
+      chatSocket._connect();
     }
   },
-
+  computed: mapState({
+    triedConnectingToSocket: state => state.socket.triedConnecting,
+    connectedToSocket: state => state.socket.connected,
+  }),
   created: function() {
-    const chatSocket = new ChatSocket(); 
-    chatSocket.onChange = () => this.$store.dispatch('socket/connectSocket');
+    chatSocket.onChange = (connected) => this.$store.dispatch('socket/changeConnectionStatus', {connected});
     chatSocket.onMessage = () => console.log("message received!");
-    //chatSocket.connect();
+    chatSocket.onConnectError = () => console.log("asd");
+    chatSocket._connect();
   },
 }
 </script>
