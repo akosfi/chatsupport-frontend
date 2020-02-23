@@ -9,7 +9,10 @@
             </div>
         </div> 
         <div class="chat-view-input">
-            asd
+            <div class="chat-view-input-message">
+                <input v-model="message" placeholder="Enter message!">
+                <div class="chat-view-input-message-send"></div>
+            </div>
         </div> 
     </div> 
 </template>
@@ -18,7 +21,7 @@
 export default {
   data: function() {
     return {
-      
+      message: '',
     }
   },
   methods: {
@@ -61,7 +64,33 @@ export default {
             background: pink;
             border-bottom-right-radius: 15px;
             border-bottom-left-radius: 15px;
+            position: relative;
+
+            &-message {
+                height: 100%;
+                & input {
+                    width: 100%;
+                    border-bottom-right-radius: 15px;
+                    border-bottom-left-radius: 15px;
+                    border: none;
+                    padding: 8px;
+                    padding-right: 60px;
+                    height: 100%;
+                    box-sizing: border-box;
+                }
+                &-send {
+                    height: 24px;
+                    width: 24px;
+                    cursor: pointer;
+                    border-radius: 100%;
+                    background: #5ea7ff;
+                    position: absolute;
+                    right: 8px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                }
+            }
         }
-    }   
+    }
     
 </style>

@@ -1,4 +1,5 @@
 import io from 'socket.io-client';
+import Cookies from 'js-cookie';
 import { CONNECT, DISCONNECT, CONNECT_ERR, RECONNECT_ERR, IDENT, IM } from './constants';
 
 
@@ -31,7 +32,10 @@ class ChatSocket {
     }
 
     sendIdent() {
-        this.socket.emit(IDENT, "COOKIEHERE");
+        const identMessage = {
+            guest_cookie: Cookies.get('guest_cookie'),
+        }
+        this.socket.emit(IDENT, identMessage);
     }
 
     onDisconnected(){
