@@ -3,7 +3,10 @@
       <div v-if="isChatWindowVisible" class="chat-window">
         <div v-on:click="closeChatWindow" class="chat-window-header"></div>
 
-        <chat-view v-if="connectedToSocket"></chat-view>
+        <chat-view
+          v-if="connectedToSocket"
+          :sendChatMessageToServer="sendChatMessageToServer"
+          ></chat-view>
 
         <connection-error-view 
           v-if="!connectedToSocket && triedConnectingToSocket"
@@ -43,6 +46,9 @@ export default {
     },
     reconnectToSocket: function () {
       chatSocket._connect();
+    },
+    sendChatMessageToServer: function (message) {
+      chatSocket._sendIm(message);
     }
   },
   computed: mapState({
@@ -51,7 +57,7 @@ export default {
   }),
   created: function() {
     chatSocket.onChange = (connected) => this.$store.dispatch('socket/changeConnectionStatus', {connected});
-    chatSocket.onMessage = () => console.log("message received!");
+    chatSocket.onMessage = (message) => this.$store.dispatch('chat/addMessage', {message: message.message});
     chatSocket.onConnectError = () => console.log("asd");
     chatSocket._connect();
   },

@@ -42,16 +42,27 @@ const getters = {
 }
 
 const actions = {
-    /*changeConnectionStatus({commit, state}, {connected}) {
-        commit('changeConnectionStatus', {connected});
-    },*/
+    loadAllMessages({commit, state}, {messages}) {
+        commit('loadAllMessages', {messages});
+    },
+    addMessage({commit, state}, {message}) {
+        commit('addMessage', {message});
+    }
 }
 
 const mutations = {
-    /*changeConnectionStatus (state, {connected}) {
-        state.triedConnecting = true
-        state.connected = connected
-    },*/
+    loadAllMessages (state, {messages}) {
+        state = {
+            ...state,
+            messages
+        }
+    },
+    addMessage (state, {message}) {
+        state = {
+            ...state,
+            messages: state.messages.push(message)
+        }
+    }
     
 }
 

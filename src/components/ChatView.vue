@@ -12,8 +12,13 @@
         </div> 
         <div class="chat-view-input">
             <div class="chat-view-input-message">
-                <input v-model="message" placeholder="Enter message!">
-                <div class="chat-view-input-message-send"></div>
+                <input 
+                    v-model="message"
+                    v-on:keyup.enter="sendChatMessage"
+                    placeholder="Enter message!">
+                <div 
+                    class="chat-view-input-message-send"
+                    v-on:click="sendChatMessage"></div>
             </div>
         </div> 
     </div> 
@@ -24,6 +29,9 @@ import _ from 'lodash';
 import {mapState} from 'vuex';
 
 export default {    
+  props: {
+    sendChatMessageToServer: {type: Function}
+  },
   data: function() {
     return {
       message: '',
@@ -32,6 +40,10 @@ export default {
   methods: {
     styleChatMessage: function(message) {
         return { 'chat-view-message-left': message.fromAdmin, 'chat-view-message-right': !message.fromAdmin };
+    },
+    sendChatMessage: function() {
+        this.sendChatMessageToServer(this.message);
+        this.message = "";
     }
   },
   computed: mapState({
@@ -47,11 +59,10 @@ export default {
     .chat-view {
         width: 100%;
         height: calc(#{$window-height} - #{$window-header-height});
-        display: flex;
-        flex-direction: column;
-
+        
         &-messages {
-            flex: 1 0 auto;
+            overflow-y: scroll;
+            height: calc(#{$window-height} - #{$window-header-height} - #{$window-header-height});
         }
         &-message {
             width: 100%;
@@ -78,7 +89,7 @@ export default {
             }
         }
         &-input {
-            flex: 0 0 48px;
+            height: $window-chat-input-height;
             @include set-window-bottom-border;
             position: relative;
 
