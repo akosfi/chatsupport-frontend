@@ -47,13 +47,6 @@ export default {
             display: flex;
             justify-content: space-between;
         }
-
-        &-options {
-
-        }
-        &-title {
-
-        }
         &-minimalize {
             cursor: pointer;
         }
