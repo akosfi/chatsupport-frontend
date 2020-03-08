@@ -18,7 +18,9 @@
                     placeholder="Enter message!">
                 <div 
                     class="chat-view-input-message-send"
-                    v-on:click="sendChatMessage"></div>
+                    v-on:click="sendChatMessage">
+                    <img src="https://image.flaticon.com/icons/svg/481/481673.svg" alt="">
+                    </div>
             </div>
         </div> 
     </div> 
@@ -61,12 +63,12 @@ export default {
         height: calc(#{$window-height} - #{$window-header-height});
         
         &-messages {
-            overflow-y: scroll;
+            overflow-y: hidden;
             height: calc(#{$window-height} - #{$window-header-height} - #{$window-header-height});
         }
         &-message {
             width: 100%;
-
+            
             &-left {
                 text-align: left;
                 
@@ -84,7 +86,9 @@ export default {
                 }
             }
             & > span {
+                margin: 8px 8px 0 8px;
                 padding: 8px 16px;
+                border-radius: 16px;
                 display: inline-block;
             }
         }
@@ -109,7 +113,6 @@ export default {
                     width: 24px;
                     cursor: pointer;
                     border-radius: 100%;
-                    background: #5ea7ff;
                     position: absolute;
                     right: 8px;
                     top: 50%;

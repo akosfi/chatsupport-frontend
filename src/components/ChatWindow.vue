@@ -1,7 +1,9 @@
 <template>
     <div>
       <div v-if="isChatWindowVisible" class="chat-window">
-        <div v-on:click="closeChatWindow" class="chat-window-header"></div>
+        <chat-header
+          :closeChatWindow="closeChatWindow"
+        ></chat-header>
 
         <chat-view
           v-if="connectedToSocket"
@@ -14,13 +16,18 @@
           ></connection-error-view>
       </div>
 
-      <div v-if="!isChatWindowVisible" class="chat-widget" v-on:click="openChatWindow"></div>
+      <div v-if="!isChatWindowVisible" class="chat-widget" v-on:click="openChatWindow">
+        <div>
+          <img src="https://image.flaticon.com/icons/svg/481/481673.svg" alt="">
+        </div>
+      </div>
     </div>
 </template>
 
 <script>
 import { mapState } from 'vuex';
 
+import ChatHeader from './ChatHeader';
 import ChatView from './ChatView';
 import ConnectionErrorView from './ConnectionErrorView';
 import ChatSocket from '../socket';
@@ -34,6 +41,7 @@ export default {
     }
   },
   components: {
+    ChatHeader,
     ChatView,
     ConnectionErrorView
   },
@@ -74,13 +82,6 @@ export default {
       border-radius: $window-border-radius;
       background: $window-background-color;
       box-shadow: 0px 0px 14px 0px rgba(0,0,0,0.43);
-
-      &-header {
-          width: 100%;
-          height: $window-header-height;
-          background: $window-header-color;
-          @include set-window-top-border;
-      }
     }
     .chat-widget {
       @include set-window-position;
@@ -89,7 +90,20 @@ export default {
       cursor: pointer;
       border-radius: 100%;
       box-shadow: 0px 0px 14px 0px rgba(0,0,0,0.43);
-      background: goldenrod;
+      background: $primary-button-background-color;
+      
+      & > div {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        & > img {
+          position: absolute;
+          top: 50%;
+          left: 45%;
+          transform: translate(-50%,-50%);
+          width: 70%;
+        }
+      }
     }
     
 </style>
