@@ -1,6 +1,6 @@
 import io from 'socket.io-client';
 import Cookies from 'js-cookie';
-import { CONNECT, DISCONNECT, CONNECT_ERR, RECONNECT_ERR, IDENT, IM, GUEST_SET } from './constants';
+import { CONNECTED, DISCONNECTED, INCOMING_MESSAGE, IDENTIFY_GUEST } from './constants';
 
 
 class ChatSocket {
@@ -24,15 +24,15 @@ class ChatSocket {
         
         this.socket = io(host);
 
-        this.socket.on(CONNECT, this._onConnected);
-        this.socket.on(DISCONNECT, this._onDisconnected);
-        this.socket.on(CONNECT_ERR, this._onError);
-        this.socket.on(GUEST_SET, this._setGuest);
+        this.socket.on(CONNECTED, this._onConnected);
+        this.socket.on(DISCONNECTED, this._onDisconnected);
+        //this.socket.on(CONNECT_ERR, this._onError);
+        //this.socket.on(GUEST_SET, this._setGuest);
     }
 
     _onConnected() {
         this._identifyGuest();
-        this.socket.on(IM, this.onMessage);
+        this.socket.on(INCOMING_MESSAGE, this.onMessage);
         this.onChange(true);
     }
 
@@ -41,7 +41,7 @@ class ChatSocket {
             guest_cookie: Cookies.get('guest_cookie'),
             lc_license: (window.__lc ? window.__lc.license : 0)
         }
-        this.socket.emit(IDENT, identMessage);
+        this.socket.emit(IDENTIFY_GUEST, identMessage);
     }
 
     _setGuest(data) {
@@ -54,7 +54,7 @@ class ChatSocket {
     }
 
     _sendIm(message) {
-        this.socket.emit(IM, message);
+        this.socket.emit(INCOMING_MESSAGE, message);
     } 
 
     _disconnect() {

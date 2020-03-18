@@ -1,8 +1,10 @@
-export const IM                 = 'im';
-export const IDENT              = 'identify';
-export const CONNECT            = 'connected';
-export const DISCONNECT         = 'disconnected';
-export const CONNECT_ERR        = 'connect_error';
-export const RECONNECT_ERR      = 'reconnect_error';
-export const GUEST_IDENTIFIED   = 'guest_identified';
-export const GUEST_SET          = 'guest_set';
+//GENERAL
+export const CONNECTED = 'CONNECTED';
+export const DISCONNECTED = 'DISCONNECTED';
+export const INCOMING_MESSAGE = 'INCOMING_MESSAGE';
+
+//GUEST
+export const IDENTIFY_GUEST = 'IDENTIFY_GUEST';
+export const IDENTIFYING_GUEST_SUCCEEDED = 'IDENTIFYING_GUEST_SUCCEEDED';
+export const IDENTIFYING_GUEST_FAILED = 'IDENTIFYING_GUEST_FAILED';
+export const CHAT_LICENSE_ERROR = 'CHAT_LICENSE_ERROR';
