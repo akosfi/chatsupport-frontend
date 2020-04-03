@@ -2,7 +2,6 @@ import Socket from '../../socket/'
 
 const state = {
     connected: false,
-    address: "http://localhost:3000",
     triedConnecting: false,
 };
 

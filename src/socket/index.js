@@ -1,6 +1,7 @@
 import io from 'socket.io-client';
 import Cookies from 'js-cookie';
 import { CONNECTED, DISCONNECTED, INCOMING_MESSAGE, IDENTIFY_GUEST, GUEST_MESSAGES_GET, GUEST_MESSAGES_SEND, IDENTIFYING_GUEST_SUCCEEDED, GUEST_COOKIE_SET } from './constants';
+import { getServerUrl } from '../util';
 
 
 class ChatSocket {
@@ -28,7 +29,7 @@ class ChatSocket {
     }
 
     connect() {
-        const host = `http://localhost:${this.port}`;
+        const host = getServerUrl();
         
         this.socket = io(host);
 
