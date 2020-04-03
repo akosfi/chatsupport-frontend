@@ -4,66 +4,45 @@ const mockMessages = [
     {
         id: 0,
         date: new Date(),
-        text: "Hi!",
+        text: "Hiaaaaaaaaaaaa!",
         fromAdmin: false,
     },
-    {
-        id: 1,
-        date: new Date(),
-        text: "Heyy!",
-        fromAdmin: true,
-    },
-    {
-        id: 2,
-        date: new Date(),
-        text: "How can i help?",
-        fromAdmin: true,
-    },
-    {
-        id: 3,
-        date: new Date(),
-        text: "You can't!",
-        fromAdmin: false,
-    },    
+    
 ]
 
 const state = {
-    isThereAnyAdminOnline: false,
-    admin: {
-        email: "",
-        typing: false,
-        online: false,
-    },
     messages: mockMessages
 };
 
 const getters = {
-
+    getMessages: (state) => {
+        return state.messages;
+    }
 }
 
 const actions = {
-    loadAllMessages({commit, state}, {messages}) {
-        commit('loadAllMessages', {messages});
+    loadAllMessages({commit, state}, messages) {
+        return new Promise((resolve, reject) => {
+            commit('loadAllMessages', messages);
+            resolve();
+        });
     },
-    addMessage({commit, state}, {message}) {
-        commit('addMessage', {message});
-    }
+    addMessage({commit, state}, message) {
+        return new Promise((resolve, reject) => {
+            commit('addMessage', message);
+            resolve();
+        });
+    },
 }
 
 const mutations = {
-    loadAllMessages (state, {messages}) {
-        state = {
-            ...state,
-            messages
-        }
+    loadAllMessages (state, messages) {
+        if(!messages) messages = [];
+        state.messages = messages;
     },
-    addMessage (state, {message}) {
-        state = {
-            ...state,
-            messages: state.messages.push(message)
-        }
-    }
-    
+    addMessage (state, message) {
+        state.messages.push(message);
+    },
 }
 
 export default {

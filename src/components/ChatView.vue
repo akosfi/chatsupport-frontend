@@ -1,13 +1,15 @@
 <template>
     <div class="chat-view">
-        <div class="chat-view-messages">
-            <div 
-                v-for="message in messages"
+        <div 
+            id="messages"
+            class="chat-view-messages">
+            <div
+                v-for="message in getMessages"
                 v-bind:key="message.id"
                 v-bind:class="styleChatMessage(message)"
-                class="chat-view-message chat-view-message-left">
+                class="chat-view-message">
 
-                <span>{{message.text}}</span>
+                <span>{{message.message}}</span>
             </div>
         </div> 
         <div class="chat-view-input">
@@ -20,7 +22,7 @@
                     class="chat-view-input-message-send"
                     v-on:click="sendChatMessage">
                     <img src="https://image.flaticon.com/icons/svg/481/481673.svg" alt="">
-                    </div>
+                </div>
             </div>
         </div> 
     </div> 
@@ -28,7 +30,7 @@
 
 <script>
 import _ from 'lodash';
-import {mapState} from 'vuex';
+import {mapState, mapGetters} from 'vuex';
 
 export default {    
   props: {
@@ -41,29 +43,34 @@ export default {
   },
   methods: {
     styleChatMessage: function(message) {
-        return { 'chat-view-message-left': message.fromAdmin, 'chat-view-message-right': !message.fromAdmin };
+        return { 
+            'chat-view-message-left': message.fromAdmin,
+            'chat-view-message-right': !message.fromAdmin
+        };
     },
     sendChatMessage: function() {
+        if(!this.message) return;
         this.sendChatMessageToServer(this.message);
         this.message = "";
     }
   },
-  computed: mapState({
-    messages: state => _.sortBy(state.chat.messages, (m) => m.date),
-  }),
+  computed: {
+    ...mapGetters({
+      getMessages: 'chat/getMessages'
+    }),
+  }
 }
 </script>
 
 <style lang="scss">
     @import "../styles/_variables";
 
-
     .chat-view {
         width: 100%;
         height: calc(#{$window-height} - #{$window-header-height});
         
         &-messages {
-            overflow-y: hidden;
+            overflow-y: scroll;
             height: calc(#{$window-height} - #{$window-header-height} - #{$window-header-height});
         }
         &-message {
@@ -86,7 +93,7 @@ export default {
                 }
             }
             & > span {
-                margin: 8px 8px 0 8px;
+                margin: 4px 8px;
                 padding: 8px 16px;
                 border-radius: 16px;
                 display: inline-block;

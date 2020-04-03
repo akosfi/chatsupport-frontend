@@ -6,12 +6,12 @@
         ></chat-header>
 
         <chat-view
-          v-if="connectedToSocket"
+          v-if="isConnected"
           :sendChatMessageToServer="sendChatMessageToServer"
           ></chat-view>
 
         <connection-error-view 
-          v-if="!connectedToSocket && triedConnectingToSocket"
+          v-if="!isConnected && triedConnectingToSocket"
           :reconnectToSocket="reconnectToSocket"
           ></connection-error-view>
       </div>
@@ -25,14 +25,12 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapGetters } from 'vuex';
 
 import ChatHeader from './ChatHeader';
 import ChatView from './ChatView';
 import ConnectionErrorView from './ConnectionErrorView';
 import ChatSocket from '../socket';
-
-const chatSocket = new ChatSocket(); 
 
 export default {
   data: function() {
@@ -53,21 +51,41 @@ export default {
       this.isChatWindowVisible = true;
     },
     reconnectToSocket: function () {
-      chatSocket._connect();
+      ChatSocket.connect();
     },
     sendChatMessageToServer: function (message) {
-      chatSocket._sendIm(message);
+      ChatSocket.sendIm(message);
+    },
+    scrollToBottom: function() {
+      var container = this.$el.querySelector("#messages");
+      container.scrollTop = container.scrollHeight;
     }
   },
-  computed: mapState({
-    triedConnectingToSocket: state => state.socket.triedConnecting,
-    connectedToSocket: state => state.socket.connected,
-  }),
+  computed: {
+    ...mapGetters({
+      triedConnectingToSocket: 'socket/hasTriedConnecting',
+      isConnected: 'socket/isConnected',
+    }),
+  },
   created: function() {
-    chatSocket.onChange = (connected) => this.$store.dispatch('socket/changeConnectionStatus', {connected});
-    chatSocket.onMessage = (message) => this.$store.dispatch('chat/addMessage', {message: message.message});
-    chatSocket.onConnectError = () => console.log("asd");
-    chatSocket._connect();
+    ChatSocket.onChange = (connected) => {
+      this.$store
+          .dispatch('socket/connectionChangedAction', connected);
+    }
+    ChatSocket.onMessage = (data) => {
+      this.$store
+          .dispatch('chat/addMessage', data.message)
+          .then(() => this.scrollToBottom());
+    
+    }
+    ChatSocket.onMessages = (data) => {
+      this.$store
+          .dispatch('chat/loadAllMessages', data.messages)
+          .then(() => {
+            this.scrollToBottom();
+          });
+    }
+    ChatSocket.connect();
   },
 }
 </script>

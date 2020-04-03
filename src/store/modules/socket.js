@@ -7,21 +7,40 @@ const state = {
 };
 
 const getters = {
-
+    getAddress: (state) => {
+        return state.address;
+    },
+    isConnected: (state) => {
+        return state.connected;
+    },
+    hasTriedConnecting: (state) => {
+        return state.triedConnecting;
+    }
 }
 
 const actions = {
-    changeConnectionStatus({commit, state}, {connected}) {
-        commit('changeConnectionStatus', {connected});
+    connectionChangedAction({commit, state}, connected) {
+        return new Promise((resolve) => {
+            commit('connectionChanged', connected);
+            resolve();
+        });
     },
+    setAddressAction({commit, state}, address) {
+        return new Promise((resolve) => {
+            commit('setAddress', address);
+            resolve();
+        });
+    }
 }
 
 const mutations = {
-    changeConnectionStatus (state, {connected}) {
-        state.triedConnecting = true
-        state.connected = connected
+    connectionChanged (state, connected) {
+        state.triedConnecting = true;
+        state.connected = connected;
     },
-    
+    setAddress(state, address) {
+        state.address = address;
+    },
 }
 
 export default {

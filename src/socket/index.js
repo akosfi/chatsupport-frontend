@@ -1,33 +1,52 @@
 import io from 'socket.io-client';
 import Cookies from 'js-cookie';
-import { CONNECTED, DISCONNECTED, INCOMING_MESSAGE, IDENTIFY_GUEST } from './constants';
+import { CONNECTED, DISCONNECTED, INCOMING_MESSAGE, IDENTIFY_GUEST, GUEST_MESSAGES_GET, GUEST_MESSAGES_SEND, IDENTIFYING_GUEST_SUCCEEDED, GUEST_COOKIE_SET } from './constants';
 
 
 class ChatSocket {
 
     constructor() {
-        this.socket = null;
         this.port = 3000;
         this.onChange = null;
-        this.onConnectError = null;
         this.onMessage = null;
+        this.onMessages = null;
 
+        this.connect = this.connect.bind(this);
+        this.disconnect = this.disconnect.bind(this);
+        this.sendIm = this.sendIm.bind(this);
+
+        
         this._identifyGuest = this._identifyGuest.bind(this);
-        this._connect = this._connect.bind(this);
+        this._onIdentifySuccedeed = this._onIdentifySuccedeed.bind(this); 
+
         this._onConnected = this._onConnected.bind(this);
+        this._onDisconnected = this._onDisconnected.bind(this);
         this._onError = this._onError.bind(this);
-        this._setGuest = this._setGuest.bind(this);
+
+        this._onCookieSet = this._onCookieSet.bind(this);
+        this._getMessages = this._getMessages.bind(this);
     }
 
-    _connect() {
+    connect() {
         const host = `http://localhost:${this.port}`;
         
         this.socket = io(host);
 
         this.socket.on(CONNECTED, this._onConnected);
         this.socket.on(DISCONNECTED, this._onDisconnected);
-        //this.socket.on(CONNECT_ERR, this._onError);
-        //this.socket.on(GUEST_SET, this._setGuest);
+        this.socket.on(IDENTIFYING_GUEST_SUCCEEDED, this._onIdentifySuccedeed);
+        this.socket.on(GUEST_MESSAGES_SEND, this.onMessages);
+        this.socket.on(GUEST_COOKIE_SET, this._onCookieSet);
+    }
+
+
+    sendIm(message) {
+        this.socket.emit(INCOMING_MESSAGE, {message});
+    } 
+
+    disconnect() {
+        this._onDisconnected();
+        this.socket.close();
     }
 
     _onConnected() {
@@ -36,30 +55,28 @@ class ChatSocket {
         this.onChange(true);
     }
 
+    _onIdentifySuccedeed() {
+        this._getMessages();
+    }
+
     _identifyGuest() {
         const identMessage = {
             guest_cookie: Cookies.get('guest_cookie'),
-            lc_license: (window.__lc ? window.__lc.license : 0)
+            lc_license: (window.__lc ? window.__lc.license : 111)
         }
         this.socket.emit(IDENTIFY_GUEST, identMessage);
     }
-
-    _setGuest(data) {
-        console.log(data);
-    }
-
 
     _onDisconnected(){
         this.onChange(false);
     }
 
-    _sendIm(message) {
-        this.socket.emit(INCOMING_MESSAGE, message);
-    } 
+    _onCookieSet(data) {
+        Cookies.set('guest_cookie', data.guest_cookie);
+    }
 
-    _disconnect() {
-        this._onDisconnected();
-        this.socket.close();
+    _getMessages() {
+        this.socket.emit(GUEST_MESSAGES_GET);
     }
 
     _onError(message) {
@@ -68,4 +85,4 @@ class ChatSocket {
     };
 }
 
-export default ChatSocket;
+export default new ChatSocket();
