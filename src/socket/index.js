@@ -63,7 +63,7 @@ class ChatSocket {
     _identifyGuest() {
         const identMessage = {
             guest_cookie: Cookies.get('guest_cookie'),
-            lc_license: (window.__lc ? window.__lc.license : 111)
+            lc_license: window.__lc.license,
         }
         this.socket.emit(IDENTIFY_GUEST, identMessage);
     }
