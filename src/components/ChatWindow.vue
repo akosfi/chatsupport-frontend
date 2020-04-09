@@ -30,7 +30,6 @@ import { mapGetters } from 'vuex';
 import ChatHeader from './ChatHeader';
 import ChatView from './ChatView';
 import ConnectionErrorView from './ConnectionErrorView';
-import ChatSocket from '../socket';
 
 export default {
   data: function() {
@@ -50,16 +49,9 @@ export default {
     openChatWindow: function() {
       this.isChatWindowVisible = true;
     },
-    reconnectToSocket: function () {
-      ChatSocket.connect();
-    },
     sendChatMessageToServer: function (message) {
-      ChatSocket.sendIm(message);
+      this.$store.dispatch('socket/sendMessageAction', {message});
     },
-    scrollToBottom: function() {
-      var container = this.$el.querySelector("#messages");
-      container.scrollTop = container.scrollHeight;
-    }
   },
   computed: {
     ...mapGetters({
@@ -67,25 +59,8 @@ export default {
       isConnected: 'socket/isConnected',
     }),
   },
-  created: function() {
-    ChatSocket.onChange = (connected) => {
-      this.$store
-          .dispatch('socket/connectionChangedAction', connected);
-    }
-    ChatSocket.onMessage = (data) => {
-      this.$store
-          .dispatch('chat/addMessage', data.message)
-          .then(() => this.scrollToBottom());
-    
-    }
-    ChatSocket.onMessages = (data) => {
-      this.$store
-          .dispatch('chat/loadAllMessages', data.messages)
-          .then(() => {
-            this.scrollToBottom();
-          });
-    }
-    ChatSocket.connect();
+  mounted: function() {
+    this.$store.dispatch('socket/connectAction');
   },
 }
 </script>

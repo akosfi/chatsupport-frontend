@@ -1,4 +1,4 @@
-import Socket from '../../socket/'
+
 
 const mockMessages = [
     {
@@ -21,13 +21,13 @@ const getters = {
 }
 
 const actions = {
-    loadAllMessages({commit, state}, messages) {
+    loadAllMessagesAction({commit, state}, messages) {
         return new Promise((resolve, reject) => {
             commit('loadAllMessages', messages);
             resolve();
         });
     },
-    addMessage({commit, state}, message) {
+    addMessageAction({commit, state}, message) {
         return new Promise((resolve, reject) => {
             commit('addMessage', message);
             resolve();

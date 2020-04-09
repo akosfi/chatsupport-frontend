@@ -33,32 +33,38 @@ import _ from 'lodash';
 import {mapState, mapGetters} from 'vuex';
 
 export default {    
-  props: {
-    sendChatMessageToServer: {type: Function}
-  },
-  data: function() {
-    return {
-      message: '',
-    }
-  },
-  methods: {
-    styleChatMessage: function(message) {
-        return { 
-            'chat-view-message-left': message.fromAdmin,
-            'chat-view-message-right': !message.fromAdmin
-        };
+    props: {
+        sendChatMessageToServer: {type: Function}
     },
-    sendChatMessage: function() {
-        if(!this.message) return;
-        this.sendChatMessageToServer(this.message);
-        this.message = "";
-    }
-  },
-  computed: {
-    ...mapGetters({
-      getMessages: 'chat/getMessages'
-    }),
-  }
+    data: function() {
+        return {
+            message: '',
+        }
+    },
+    methods: {
+        styleChatMessage: function(message) {
+            return { 
+                'chat-view-message-left': message.fromAdmin,
+                'chat-view-message-right': !message.fromAdmin
+            };
+        },
+        sendChatMessage: function() {
+            if(!this.message) return;
+            this.sendChatMessageToServer(this.message);
+            this.message = "";
+        }
+    },
+    computed: {
+        ...mapGetters({
+            getMessages: 'chat/getMessages'
+        }),
+    },
+    updated: function() {
+        if(!this.$el.querySelector) return;
+        var container = this.$el.querySelector("#messages");
+        if(!container) return;
+        container.scrollTop = container.scrollHeight;
+    },
 }
 </script>
 
