@@ -80,7 +80,6 @@ const actions = {
         });
     }
 }
-//Cookies.set('guest_cookie', data.guest_cookie);
 const mutations = {
     connectionChanged (state, connected) {
         state.triedConnecting = true;

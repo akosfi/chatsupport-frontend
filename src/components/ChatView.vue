@@ -3,6 +3,11 @@
         <div 
             id="messages"
             class="chat-view-messages">
+            <div 
+                class="chat-view-info"
+                v-if="getMessages.length <= 0">
+                Do you have any question? <br> Contact us below! :) 
+            </div>
             <div
                 v-for="message in getMessages"
                 v-bind:key="message.id"
@@ -132,6 +137,10 @@ export default {
                     transform: translateY(-50%);
                 }
             }
+        }
+        &-info {
+            text-align: center;
+            padding-top: 128px;
         }
     }
     

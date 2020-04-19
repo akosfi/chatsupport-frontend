@@ -1,17 +1,5 @@
-
-
-const mockMessages = [
-    {
-        id: 0,
-        date: new Date(),
-        text: "Hiaaaaaaaaaaaa!",
-        fromAdmin: false,
-    },
-    
-]
-
 const state = {
-    messages: mockMessages
+    messages: []
 };
 
 const getters = {
