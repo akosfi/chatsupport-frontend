@@ -49,8 +49,8 @@ export default {
     methods: {
         styleChatMessage: function(message) {
             return { 
-                'chat-view-message-left': message.fromAdmin,
-                'chat-view-message-right': !message.fromAdmin
+                'chat-view-message-left': message.from_admin,
+                'chat-view-message-right': !message.from_admin
             };
         },
         sendChatMessage: function() {
